@@ -1,0 +1,10 @@
+# Lightweight environment for start_all.py with fastapi/qwen_api backends.
+# Does not install torch or transformers.
+PyYAML==6.0.3
+numpy==2.2.6
+pydantic>=2.11,<3
+fastapi>=0.116,<1
+uvicorn[standard]>=0.35,<1
+paramiko>=3.5,<4
+ddgs>=9.14,<10
+langchain-openai>=1.0,<2
