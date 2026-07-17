@@ -57,7 +57,7 @@ flowchart LR
 | 组成部分               | 当前实现与团队成果                                                                                                                                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | React 前端             | 提供多轮对话、文件上传、流式回答、工具过程折叠区、产物下载、历史会话、回答终止/恢复、会话提示词编辑，以及 B1-B5 独立观察/演示页面。                                          |
-| FastAPI 后端           | 提供对话与 SSE 接口、上传文件管理、会话查询/删除、System Prompt 更新、生成文件受限下载、取消/恢复，以及五模块演示 API；不承载核心 Agent 决策。                               |
+| FastAPI 后端           | 提供NDJSON 流式接口、上传文件管理、会话查询/删除、System Prompt 更新、生成文件受限下载、取消/恢复，以及五模块演示 API；不承载核心 Agent 决策。                               |
 | B1 Agent运行与消息管理 | 接收 Runtime 输入，组织标准消息和 Workspace，协调 B5、B3、B4，推进 Planning、Tool Calling、Observation、Answering，维护流式事件和 Checkpoint。                               |
 | B2 Skill工具函数       | 提供独立、JSON可序列化的实际执行能力，包括文件/目录浏览、TXT/Markdown/Office读取、文件搜索、计算、当前时间、CSV/XLSX表格分析、DDGS联网搜索、多格式文件生成和受限Python沙箱。 |
 | B3 说明生成与工具调用  | 从 `tools.yaml` 生成 OpenAI风格 Schema，检查工具名与必填参数，动态调用 B2并封装 ToolMessage；同时负责可恢复重试、结果缓存、调用日志、耗时统计和文件产物引用。                |
@@ -455,7 +455,7 @@ B5 当前实现已经形成完整的功能证据链：
 - **B5 分层记忆实现**：[code/b5_memory_parts](https://github.com/aaaprprpr/agent/tree/main/code/b5_memory_parts)
 - **SQLite 持久化实现**：[code/common/conversation_store.py](https://github.com/aaaprprpr/agent/blob/main/code/common/conversation_store.py)
 - **个人模块源码链接**：[B4 决策模块](https://github.com/aaaprprpr/agent/blob/main/code/b4_local_agent_llm.py)、[B5 分层记忆模块](https://github.com/aaaprprpr/agent/tree/main/code/b5_memory_parts)、[个人模块 README](https://github.com/aaaprprpr/agent/blob/main/%E7%8E%8B%E7%8E%BA%E5%B0%8APERSONAL_README.md)
-- **独立个人仓库**：
+- **独立个人仓库** ：[个人模块独立仓库](https://github.com/lisnist/B_agent_12_6481)
 
 #### 3.4.2 主要交付文件
 
