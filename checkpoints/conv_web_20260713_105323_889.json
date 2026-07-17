@@ -1,0 +1,2514 @@
+{
+  "schema_version": 1,
+  "status": "done",
+  "stage": "done",
+  "partial_answer": "",
+  "runtime": {
+    "conversation_id": "conv_web_20260713_105323_889",
+    "user_input": "你好",
+    "history_messages": [],
+    "input_images": [],
+    "system_prompt_path": "../prompts/local_tool_agent.txt",
+    "selected_memory_ids": [],
+    "use_global_memory": false,
+    "toolset": "basic_tools",
+    "save_memory": "none",
+    "execution_mode": "integrated",
+    "max_turns": 10,
+    "recent_history_messages": [],
+    "workspace_memory_context": {
+      "status": "success",
+      "memory_policy": {
+        "current_input_priority": true,
+        "summaries_are_locators": true,
+        "exact_facts_require_source": true,
+        "recent_history_is_raw": true,
+        "older_history_is_recalled_only_when_selected": true,
+        "vector_retrieval": {
+          "blocks": {
+            "status": "skipped",
+            "enabled": true,
+            "reason": "empty query or candidates"
+          },
+          "turns": {
+            "status": "skipped",
+            "enabled": true,
+            "reason": "empty query or candidates"
+          }
+        },
+        "llm_rerank": {
+          "status": "skipped",
+          "enabled": true
+        }
+      },
+      "foreground_task": null,
+      "paused_tasks": [],
+      "recalled_blocks": [],
+      "recalled_turns": [],
+      "source_messages": [],
+      "source_tool_steps": [],
+      "recent_context_turns": 4,
+      "history_message_count": 0,
+      "recent_history_message_count": 0,
+      "context_chars": 0,
+      "max_context_chars": 2000,
+      "truncated": false,
+      "loaded_message_ids": [],
+      "loaded_tool_step_ids": [],
+      "vector_retrieval": {
+        "blocks": {
+          "status": "skipped",
+          "enabled": true,
+          "reason": "empty query or candidates"
+        },
+        "turns": {
+          "status": "skipped",
+          "enabled": true,
+          "reason": "empty query or candidates"
+        }
+      },
+      "llm_rerank": {
+        "status": "skipped",
+        "enabled": true
+      },
+      "retrieval_log": {
+        "status": "success",
+        "retrieval_log_id": "memory_retrieval_e803b3d709e34fc0918df564b36e0a16",
+        "created_at": "2026-07-13T10:53:24+08:00"
+      },
+      "error": null
+    },
+    "workspace_memory_build": {
+      "status": "success",
+      "history_message_count": 0,
+      "recent_history_message_count": 0
+    }
+  },
+  "execution_mode": "integrated",
+  "mode": "prompt_json",
+  "output_dir": "C:\\Users\\guojia\\Desktop\\实训二段\\assignment_B\\agent\\outputs\\backend_runs\\conv_web_20260713_105323_889\\20260713_105323_933746",
+  "selected_memory": {
+    "status": "success",
+    "query": "你好",
+    "selected_memory_docs": [],
+    "max_memory_chars": 2000,
+    "total_chars": 0,
+    "truncated": false,
+    "errors": []
+  },
+  "tools_schema": [
+    {
+      "type": "function",
+      "function": {
+        "name": "calculator",
+        "description": "计算明确的算术表达式，例如加减乘除、括号和幂运算。适合用户给出具体表达式并需要精确数值结果的场景；复杂表格统计优先使用 table_analyzer。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：result: 计算结果。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "expression": {
+              "type": "string",
+              "description": "由数字和支持的运算符组成的算术表达式。"
+            }
+          },
+          "required": [
+            "expression"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "number",
+              "description": "计算结果。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "result": {
+                  "type": "number",
+                  "description": "计算结果。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "current_time",
+        "description": "获取当前日期、时间、星期、时间戳或指定时区时间。适合回答“现在几点”“今天日期”“当前时间”等需要实时钟表信息的问题；默认不传 timezone 表示本地时间。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：timezone: 解析后的时区标签。；iso: 当前时间的标准时间格式。；date: 当前日期。；time: 当前钟表时间。；weekday: 星期名称。；weekday_index: 星期序号，周一为 1。；utc_offset: 协调世界时偏移，格式为正负小时分钟。；unix_timestamp: Unix 时间戳。；local_time: 当前本地时区时间。；utc_time: 当前协调世界时。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "可选时区名称，例如本地、协调世界时、亚洲上海，或类似 +08:00 的固定偏移。"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "解析后的时区标签。"
+            },
+            "iso": {
+              "type": "string",
+              "description": "当前时间的标准时间格式。"
+            },
+            "date": {
+              "type": "string",
+              "description": "当前日期。"
+            },
+            "time": {
+              "type": "string",
+              "description": "当前钟表时间。"
+            },
+            "weekday": {
+              "type": "string",
+              "description": "星期名称。"
+            },
+            "weekday_index": {
+              "type": "integer",
+              "description": "星期序号，周一为 1。"
+            },
+            "utc_offset": {
+              "type": "string",
+              "description": "协调世界时偏移，格式为正负小时分钟。"
+            },
+            "unix_timestamp": {
+              "type": "integer",
+              "description": "Unix 时间戳。"
+            },
+            "local_time": {
+              "type": "string",
+              "description": "当前本地时区时间。"
+            },
+            "utc_time": {
+              "type": "string",
+              "description": "当前协调世界时。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "timezone": {
+                  "type": "string",
+                  "description": "解析后的时区标签。"
+                },
+                "iso": {
+                  "type": "string",
+                  "description": "当前时间的标准时间格式。"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "当前日期。"
+                },
+                "time": {
+                  "type": "string",
+                  "description": "当前钟表时间。"
+                },
+                "weekday": {
+                  "type": "string",
+                  "description": "星期名称。"
+                },
+                "weekday_index": {
+                  "type": "integer",
+                  "description": "星期序号，周一为 1。"
+                },
+                "utc_offset": {
+                  "type": "string",
+                  "description": "协调世界时偏移，格式为正负小时分钟。"
+                },
+                "unix_timestamp": {
+                  "type": "integer",
+                  "description": "Unix 时间戳。"
+                },
+                "local_time": {
+                  "type": "string",
+                  "description": "当前本地时区时间。"
+                },
+                "utc_time": {
+                  "type": "string",
+                  "description": "当前协调世界时。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "directory_list",
+        "description": "列出允许工作区内某个目录的文件和子目录，类似 ls。用于探路、确认上传文件名、查看目录下有哪些文件；不读取文件正文。若已经知道准确文件路径并需要内容，应使用 file_reader。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：path: 被列出的路径。；relative_path: 相对匹配根目录的路径。；root_alias: 匹配到的允许根目录别名。；kind: path 的类型：directory、file、other。；recursive: 是否递归。；max_depth: 最大递归深度。；entry_count: 返回条目数量。；truncated: 是否因为 max_entries 截断。；entries: 文件或目录条目，包含 name、path、relative_path、kind、suffix、size_bytes、modified_time。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "要列出的目录或文件路径。默认 . 表示 data 根目录；可使用 uploads/...、outputs:...、code:... 等允许根目录路径。"
+            },
+            "recursive": {
+              "type": "boolean",
+              "description": "是否递归列出子目录。默认 false。"
+            },
+            "max_depth": {
+              "type": "integer",
+              "description": "递归时的最大深度，默认 1，最大 8。"
+            },
+            "file_types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "可选文件后缀过滤，例如 [\"txt\",\"md\",\"docx\"]；目录仍会显示，便于继续探路。"
+            },
+            "include_hidden": {
+              "type": "boolean",
+              "description": "是否包含以点开头的隐藏路径。默认 false。"
+            },
+            "max_entries": {
+              "type": "integer",
+              "description": "最多返回条目数，默认 100，最大 500。"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "被列出的路径。"
+            },
+            "relative_path": {
+              "type": "string",
+              "description": "相对匹配根目录的路径。"
+            },
+            "root_alias": {
+              "type": "string",
+              "description": "匹配到的允许根目录别名。"
+            },
+            "kind": {
+              "type": "string",
+              "description": "path 的类型：directory、file、other。"
+            },
+            "recursive": {
+              "type": "boolean",
+              "description": "是否递归。"
+            },
+            "max_depth": {
+              "type": "integer",
+              "description": "最大递归深度。"
+            },
+            "entry_count": {
+              "type": "integer",
+              "description": "返回条目数量。"
+            },
+            "truncated": {
+              "type": "boolean",
+              "description": "是否因为 max_entries 截断。"
+            },
+            "entries": {
+              "type": "array",
+              "description": "文件或目录条目，包含 name、path、relative_path、kind、suffix、size_bytes、modified_time。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "被列出的路径。"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "相对匹配根目录的路径。"
+                },
+                "root_alias": {
+                  "type": "string",
+                  "description": "匹配到的允许根目录别名。"
+                },
+                "kind": {
+                  "type": "string",
+                  "description": "path 的类型：directory、file、other。"
+                },
+                "recursive": {
+                  "type": "boolean",
+                  "description": "是否递归。"
+                },
+                "max_depth": {
+                  "type": "integer",
+                  "description": "最大递归深度。"
+                },
+                "entry_count": {
+                  "type": "integer",
+                  "description": "返回条目数量。"
+                },
+                "truncated": {
+                  "type": "boolean",
+                  "description": "是否因为 max_entries 截断。"
+                },
+                "entries": {
+                  "type": "array",
+                  "description": "文件或目录条目，包含 name、path、relative_path、kind、suffix、size_bytes、modified_time。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "file_stat",
+        "description": "检查允许工作区内某个路径是否存在及其类型，类似 stat。用于读取前确认路径、判断是文件还是目录、查看后缀和大小；不读取文件正文。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：path: 被检查路径。；relative_path: 相对匹配根目录的路径。；root_alias: 匹配到的允许根目录别名。；exists: 路径是否存在。；kind: 类型：file、directory、other、missing。；suffix: 文件后缀；非文件为空。；size_bytes: 文件大小；仅文件存在时返回。；modified_time: 修改时间；存在时返回。；child_count: 目录的直接子项数量；仅目录存在时返回。；readable_by_file_reader: 该文件是否可用 file_reader 读取。；analyzable_by_table_analyzer: 该文件是否可用 table_analyzer 分析。；parent_exists: 路径不存在时，父目录是否存在。；parent_path: 路径不存在时的父目录路径。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "要检查的文件或目录路径，可使用 uploads/...、outputs:...、code:... 等允许根目录路径。"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "被检查路径。"
+            },
+            "relative_path": {
+              "type": "string",
+              "description": "相对匹配根目录的路径。"
+            },
+            "root_alias": {
+              "type": "string",
+              "description": "匹配到的允许根目录别名。"
+            },
+            "exists": {
+              "type": "boolean",
+              "description": "路径是否存在。"
+            },
+            "kind": {
+              "type": "string",
+              "description": "类型：file、directory、other、missing。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀；非文件为空。"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "description": "文件大小；仅文件存在时返回。"
+            },
+            "modified_time": {
+              "type": "string",
+              "description": "修改时间；存在时返回。"
+            },
+            "child_count": {
+              "type": "integer",
+              "description": "目录的直接子项数量；仅目录存在时返回。"
+            },
+            "readable_by_file_reader": {
+              "type": "boolean",
+              "description": "该文件是否可用 file_reader 读取。"
+            },
+            "analyzable_by_table_analyzer": {
+              "type": "boolean",
+              "description": "该文件是否可用 table_analyzer 分析。"
+            },
+            "parent_exists": {
+              "type": "boolean",
+              "description": "路径不存在时，父目录是否存在。"
+            },
+            "parent_path": {
+              "type": "string",
+              "description": "路径不存在时的父目录路径。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "被检查路径。"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "相对匹配根目录的路径。"
+                },
+                "root_alias": {
+                  "type": "string",
+                  "description": "匹配到的允许根目录别名。"
+                },
+                "exists": {
+                  "type": "boolean",
+                  "description": "路径是否存在。"
+                },
+                "kind": {
+                  "type": "string",
+                  "description": "类型：file、directory、other、missing。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀；非文件为空。"
+                },
+                "size_bytes": {
+                  "type": "integer",
+                  "description": "文件大小；仅文件存在时返回。"
+                },
+                "modified_time": {
+                  "type": "string",
+                  "description": "修改时间；存在时返回。"
+                },
+                "child_count": {
+                  "type": "integer",
+                  "description": "目录的直接子项数量；仅目录存在时返回。"
+                },
+                "readable_by_file_reader": {
+                  "type": "boolean",
+                  "description": "该文件是否可用 file_reader 读取。"
+                },
+                "analyzable_by_table_analyzer": {
+                  "type": "boolean",
+                  "description": "该文件是否可用 table_analyzer 分析。"
+                },
+                "parent_exists": {
+                  "type": "boolean",
+                  "description": "路径不存在时，父目录是否存在。"
+                },
+                "parent_path": {
+                  "type": "string",
+                  "description": "路径不存在时的父目录路径。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "file_reader",
+        "description": "读取一个已知路径文件的正文，类似 cat。支持 txt、md、json、jsonl、csv、tsv、yaml、py、log、docx、pptx；不支持图片、PDF、旧版 doc/ppt、xlsx 或扫描件。不知道文件名时先用 directory_list；只知道关键词时先用 local_file_search。若返回 truncated=true，只表示读取了部分内容，不能声称已读完整文件。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：content: 文件内容。；num_chars: 返回的字符数。；source: 规范化后的路径；如果不在数据目录下，会包含根目录别名。；relative_path: 相对匹配根目录的路径。；root_alias: 匹配到的允许根目录别名。；suffix: 文件后缀。；line_count: 文件总行数。；line_start: 本次返回内容的起始行。；line_end: 本次返回内容的结束行。；parser: 使用的解析器。；document_type: 文档类型。；slide_count: 演示文件的页数；仅适用时返回。；truncated: 内容是否被截断。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "相对于数据目录的路径，或允许工作区根目录下的别名路径。"
+            },
+            "max_chars": {
+              "type": "integer",
+              "description": "最多返回的字符数。"
+            },
+            "start_line": {
+              "type": "integer",
+              "description": "可选起始行号，从 1 开始，用于部分读取。"
+            },
+            "end_line": {
+              "type": "integer",
+              "description": "可选结束行号，从 1 开始，用于部分读取。"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "文件内容。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "返回的字符数。"
+            },
+            "source": {
+              "type": "string",
+              "description": "规范化后的路径；如果不在数据目录下，会包含根目录别名。"
+            },
+            "relative_path": {
+              "type": "string",
+              "description": "相对匹配根目录的路径。"
+            },
+            "root_alias": {
+              "type": "string",
+              "description": "匹配到的允许根目录别名。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀。"
+            },
+            "line_count": {
+              "type": "integer",
+              "description": "文件总行数。"
+            },
+            "line_start": {
+              "type": "integer",
+              "description": "本次返回内容的起始行。"
+            },
+            "line_end": {
+              "type": "integer",
+              "description": "本次返回内容的结束行。"
+            },
+            "parser": {
+              "type": "string",
+              "description": "使用的解析器。"
+            },
+            "document_type": {
+              "type": "string",
+              "description": "文档类型。"
+            },
+            "slide_count": {
+              "type": "integer",
+              "description": "演示文件的页数；仅适用时返回。"
+            },
+            "truncated": {
+              "type": "boolean",
+              "description": "内容是否被截断。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "description": "文件内容。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "返回的字符数。"
+                },
+                "source": {
+                  "type": "string",
+                  "description": "规范化后的路径；如果不在数据目录下，会包含根目录别名。"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "相对匹配根目录的路径。"
+                },
+                "root_alias": {
+                  "type": "string",
+                  "description": "匹配到的允许根目录别名。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀。"
+                },
+                "line_count": {
+                  "type": "integer",
+                  "description": "文件总行数。"
+                },
+                "line_start": {
+                  "type": "integer",
+                  "description": "本次返回内容的起始行。"
+                },
+                "line_end": {
+                  "type": "integer",
+                  "description": "本次返回内容的结束行。"
+                },
+                "parser": {
+                  "type": "string",
+                  "description": "使用的解析器。"
+                },
+                "document_type": {
+                  "type": "string",
+                  "description": "文档类型。"
+                },
+                "slide_count": {
+                  "type": "integer",
+                  "description": "演示文件的页数；仅适用时返回。"
+                },
+                "truncated": {
+                  "type": "boolean",
+                  "description": "内容是否被截断。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "text_file_writer",
+        "description": "当用户明确要求生成或保存 .txt 纯文本文件时使用。只在本次运行的 generated_files 输出目录中创建新文件，不修改已有项目文件，不覆盖同名文件；普通对话、记录、总结或直接回答不需要调用。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 txt。；suffix: 文件后缀，固定为 .txt。；num_chars: 输入内容字符数。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须以 .txt 结尾；拒绝绝对路径、空路径段和父目录片段。"
+            },
+            "content": {
+              "type": "string",
+              "description": "要写入 .txt 文件的完整文本内容。"
+            }
+          },
+          "required": [
+            "filename",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 txt。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀，固定为 .txt。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "输入内容字符数。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 txt。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀，固定为 .txt。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "输入内容字符数。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "markdown_file_writer",
+        "description": "当用户明确要求生成或保存 Markdown 文档时使用。只创建 .md 文件；不要把普通回答、摘要或列表都自动写成文件，除非用户明确要求导出/保存/生成文件。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 markdown。；suffix: 文件后缀，固定为 .md。；num_chars: 输入内容字符数。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须以 .md 结尾；拒绝绝对路径和父目录片段。"
+            },
+            "content": {
+              "type": "string",
+              "description": "要写入 Markdown 文件的完整内容，可以包含标题、列表、表格和代码块。"
+            }
+          },
+          "required": [
+            "filename",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 markdown。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀，固定为 .md。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "输入内容字符数。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 markdown。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀，固定为 .md。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "输入内容字符数。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "code_file_writer",
+        "description": "当用户明确要求生成代码文件、脚本文件或给出具体代码文件名/后缀时使用。只写入代码文本，不执行代码、不安装依赖、不修改项目源文件；支持常见代码后缀如 .py、.cpp、.c、.js、.ts、.tsx、.html、.css、.java、.go、.rs、.sql、.sh、.ps1。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 code。；suffix: 生成文件后缀。；num_chars: 输入内容字符数。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。；language: 可选语言标签；仅在输入提供时返回。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须使用支持的代码后缀；拒绝绝对路径和父目录片段。"
+            },
+            "content": {
+              "type": "string",
+              "description": "要写入代码文件的完整源码内容。"
+            },
+            "language": {
+              "type": "string",
+              "description": "可选语言标签，仅用于结果说明，例如 python、cpp、javascript。"
+            }
+          },
+          "required": [
+            "filename",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 code。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "生成文件后缀。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "输入内容字符数。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            },
+            "language": {
+              "type": "string",
+              "description": "可选语言标签；仅在输入提供时返回。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 code。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "生成文件后缀。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "输入内容字符数。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                },
+                "language": {
+                  "type": "string",
+                  "description": "可选语言标签；仅在输入提供时返回。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "json_file_writer",
+        "description": "当用户明确要求生成或导出 JSON 文件时使用。输入必须是结构化 JSON 对象，由工具负责序列化和格式化，避免让模型手写不合法 JSON 字符串。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 json。；suffix: 文件后缀，固定为 .json。；num_chars: 序列化后 JSON 字符数。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须以 .json 结尾；拒绝绝对路径和父目录片段。"
+            },
+            "data": {
+              "type": "object",
+              "description": "要写入文件的 JSON 对象。"
+            }
+          },
+          "required": [
+            "filename",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 json。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀，固定为 .json。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "序列化后 JSON 字符数。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 json。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀，固定为 .json。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "序列化后 JSON 字符数。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "docx_writer",
+        "description": "当用户明确要求生成 Word 文档或 .docx 文件时使用。输入为纯文本内容，工具会生成最小可打开的 docx 文件；复杂样式、图片、页眉页脚和表格排版不由此工具保证。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 docx。；suffix: 文件后缀，固定为 .docx。；num_chars: 输入内容字符数。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须以 .docx 结尾；拒绝绝对路径和父目录片段。"
+            },
+            "content": {
+              "type": "string",
+              "description": "要写入 Word 文档的完整文本内容；换行会转换为段落。"
+            }
+          },
+          "required": [
+            "filename",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 docx。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀，固定为 .docx。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "输入内容字符数。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 docx。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀，固定为 .docx。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "输入内容字符数。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "table_file_writer",
+        "description": "当用户明确要求生成 CSV 或 TSV 表格文件时使用。输入必须包含列名和行数据；不要用于分析已有表格，分析已有表格应使用 table_analyzer。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：generated_file_path: 生成文件的绝对路径。；relative_output_path: 运行输出目录下的相对路径，位于 generated_files 目录内。；download_url: 浏览器可访问的文件下载接口地址。；filename: 唯一性处理后的最终文件名。；file_type: 文件类型，固定为 table。；suffix: 文件后缀，为 .csv 或 .tsv。；num_chars: 生成文件字符数的近似值。；num_bytes: 生成文件的字节大小。；overwritten: 是否覆盖已有文件；该工具始终不会覆盖。；num_rows: 写入的数据行数，不含表头。；num_columns: 写入的列数。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "相对输出文件名，必须以 .csv 或 .tsv 结尾；拒绝绝对路径和父目录片段。"
+            },
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "表头列名数组。"
+            },
+            "rows": {
+              "type": "array",
+              "description": "数据行数组；每行可以是对象或数组。"
+            }
+          },
+          "required": [
+            "filename",
+            "columns",
+            "rows"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "generated_file_path": {
+              "type": "string",
+              "description": "生成文件的绝对路径。"
+            },
+            "relative_output_path": {
+              "type": "string",
+              "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "浏览器可访问的文件下载接口地址。"
+            },
+            "filename": {
+              "type": "string",
+              "description": "唯一性处理后的最终文件名。"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "文件类型，固定为 table。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "文件后缀，为 .csv 或 .tsv。"
+            },
+            "num_chars": {
+              "type": "integer",
+              "description": "生成文件字符数的近似值。"
+            },
+            "num_bytes": {
+              "type": "integer",
+              "description": "生成文件的字节大小。"
+            },
+            "overwritten": {
+              "type": "boolean",
+              "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+            },
+            "num_rows": {
+              "type": "integer",
+              "description": "写入的数据行数，不含表头。"
+            },
+            "num_columns": {
+              "type": "integer",
+              "description": "写入的列数。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "generated_file_path": {
+                  "type": "string",
+                  "description": "生成文件的绝对路径。"
+                },
+                "relative_output_path": {
+                  "type": "string",
+                  "description": "运行输出目录下的相对路径，位于 generated_files 目录内。"
+                },
+                "download_url": {
+                  "type": "string",
+                  "description": "浏览器可访问的文件下载接口地址。"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "唯一性处理后的最终文件名。"
+                },
+                "file_type": {
+                  "type": "string",
+                  "description": "文件类型，固定为 table。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "文件后缀，为 .csv 或 .tsv。"
+                },
+                "num_chars": {
+                  "type": "integer",
+                  "description": "生成文件字符数的近似值。"
+                },
+                "num_bytes": {
+                  "type": "integer",
+                  "description": "生成文件的字节大小。"
+                },
+                "overwritten": {
+                  "type": "boolean",
+                  "description": "是否覆盖已有文件；该工具始终不会覆盖。"
+                },
+                "num_rows": {
+                  "type": "integer",
+                  "description": "写入的数据行数，不含表头。"
+                },
+                "num_columns": {
+                  "type": "integer",
+                  "description": "写入的列数。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "web_search",
+        "description": "直接通过 DDGS/DuckDuckGo 进行网页搜索。用于互联网搜索、实时新闻、近期事件、当前外部信息，或本地文件中没有的主题。query 应写成具体搜索词，包含主题、地区、时间范围或信息类型；不要只写“查一下”“实时新闻”等空泛词。该工具只返回搜索结果和链接，不负责打开网页正文。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：query: 原始搜索关键词。；requested_top_k: 用户请求的结果数量。；top_k: 实际请求的结果数量。；search_type: 搜索类型。；region: 搜索区域。；timelimit: 搜索时间范围；未设置时为空。；category: 实际执行的搜索类别：text 或 news。；backend: 实际使用的 DDGS 后端。；attempt_count: 搜索尝试次数。；attempts: 搜索尝试记录，包括类别、后端、结果数量或错误。；result_count: 返回结果数量。；results: 搜索结果，包含 rank、title、url、source_name、published、snippet、category。；text: 便于模型阅读的搜索结果摘要文本。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "网页搜索关键词。"
+            },
+            "top_k": {
+              "type": "integer",
+              "description": "请求的最大结果数量。"
+            },
+            "search_type": {
+              "type": "string",
+              "description": "搜索类型，可选 auto、text、news；实时新闻优先使用 news，不确定时用 auto。"
+            },
+            "region": {
+              "type": "string",
+              "description": "搜索区域，默认 cn-zh；需要英文或国际结果时可用 us-en。"
+            },
+            "timelimit": {
+              "type": "string",
+              "description": "可选时间范围：d 表示近一天，w 表示近一周，m 表示近一月，y 表示近一年。"
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "原始搜索关键词。"
+            },
+            "requested_top_k": {
+              "type": "integer",
+              "description": "用户请求的结果数量。"
+            },
+            "top_k": {
+              "type": "integer",
+              "description": "实际请求的结果数量。"
+            },
+            "search_type": {
+              "type": "string",
+              "description": "搜索类型。"
+            },
+            "region": {
+              "type": "string",
+              "description": "搜索区域。"
+            },
+            "timelimit": {
+              "type": "string",
+              "description": "搜索时间范围；未设置时为空。"
+            },
+            "category": {
+              "type": "string",
+              "description": "实际执行的搜索类别：text 或 news。"
+            },
+            "backend": {
+              "type": "string",
+              "description": "实际使用的 DDGS 后端。"
+            },
+            "attempt_count": {
+              "type": "integer",
+              "description": "搜索尝试次数。"
+            },
+            "attempts": {
+              "type": "array",
+              "description": "搜索尝试记录，包括类别、后端、结果数量或错误。"
+            },
+            "result_count": {
+              "type": "integer",
+              "description": "返回结果数量。"
+            },
+            "results": {
+              "type": "array",
+              "description": "搜索结果，包含 rank、title、url、source_name、published、snippet、category。"
+            },
+            "text": {
+              "type": "string",
+              "description": "便于模型阅读的搜索结果摘要文本。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "原始搜索关键词。"
+                },
+                "requested_top_k": {
+                  "type": "integer",
+                  "description": "用户请求的结果数量。"
+                },
+                "top_k": {
+                  "type": "integer",
+                  "description": "实际请求的结果数量。"
+                },
+                "search_type": {
+                  "type": "string",
+                  "description": "搜索类型。"
+                },
+                "region": {
+                  "type": "string",
+                  "description": "搜索区域。"
+                },
+                "timelimit": {
+                  "type": "string",
+                  "description": "搜索时间范围；未设置时为空。"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "实际执行的搜索类别：text 或 news。"
+                },
+                "backend": {
+                  "type": "string",
+                  "description": "实际使用的 DDGS 后端。"
+                },
+                "attempt_count": {
+                  "type": "integer",
+                  "description": "搜索尝试次数。"
+                },
+                "attempts": {
+                  "type": "array",
+                  "description": "搜索尝试记录，包括类别、后端、结果数量或错误。"
+                },
+                "result_count": {
+                  "type": "integer",
+                  "description": "返回结果数量。"
+                },
+                "results": {
+                  "type": "array",
+                  "description": "搜索结果，包含 rank、title、url、source_name、published、snippet、category。"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "便于模型阅读的搜索结果摘要文本。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "local_file_search",
+        "description": "在允许工作区内按关键词搜索本地文本类文件，类似 grep。用于根据关键词找到可能相关的文件路径和片段；不读取完整正文。列目录用 directory_list；读取确定文件用 file_reader。不能用于网页、互联网、实时新闻或当前外部信息。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：query_terms: 从 query 中解析出的搜索词。；root_alias: 搜索目录匹配到的允许根目录别名。；results: 按相关度排序的路径、片段和分数。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "搜索关键词。"
+            },
+            "root_dir": {
+              "type": "string",
+              "description": "相对于数据目录的目录，或允许工作区根目录下的别名路径。"
+            },
+            "file_types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "需要搜索的文件扩展名。"
+            },
+            "top_k": {
+              "type": "integer",
+              "description": "最多返回的匹配数量。"
+            },
+            "max_file_chars": {
+              "type": "integer",
+              "description": "每个文件最多扫描的字符数。"
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "query_terms": {
+              "type": "array",
+              "description": "从 query 中解析出的搜索词。"
+            },
+            "root_alias": {
+              "type": "string",
+              "description": "搜索目录匹配到的允许根目录别名。"
+            },
+            "results": {
+              "type": "array",
+              "description": "按相关度排序的路径、片段和分数。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "query_terms": {
+                  "type": "array",
+                  "description": "从 query 中解析出的搜索词。"
+                },
+                "root_alias": {
+                  "type": "string",
+                  "description": "搜索目录匹配到的允许根目录别名。"
+                },
+                "results": {
+                  "type": "array",
+                  "description": "按相关度排序的路径、片段和分数。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "table_analyzer",
+        "description": "分析已有的本地 CSV、TSV 或 XLSX 表格文件，返回行列数、列名、预览、缺失值和可选数值统计。XLSX 默认分析第一张工作表。不用于生成表格文件；生成 CSV/TSV 应使用 table_file_writer。\n工具执行结果会封装为 ToolMessage.content 中的 SkillResult JSON：status 表示 success/error；output 是业务结果；error 是失败原因；summary 是简短摘要；sources 是读取或搜索来源；artifacts 是生成文件。\n主要 output 字段：path: 规范化后的表格路径；如果不在数据目录下，会包含根目录别名。；relative_path: 相对匹配根目录的路径。；root_alias: 匹配到的允许根目录别名。；suffix: 表格文件后缀。；parser: 使用的解析器；xlsx 时为第一张工作表路径。；num_rows: 数据行数。；num_columns: 列数。；columns: 列名。；preview: 前几行预览。；column_profiles: 按列统计的缺失值和唯一值信息。；describe: 按列统计的数值信息。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "相对于数据目录的 .csv、.tsv 或 .xlsx 表格路径，或允许工作区根目录下的别名路径。"
+            },
+            "max_rows_preview": {
+              "type": "integer",
+              "description": "预览行数。"
+            },
+            "describe": {
+              "type": "boolean",
+              "description": "是否计算数值统计信息。"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "x-returns": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "规范化后的表格路径；如果不在数据目录下，会包含根目录别名。"
+            },
+            "relative_path": {
+              "type": "string",
+              "description": "相对匹配根目录的路径。"
+            },
+            "root_alias": {
+              "type": "string",
+              "description": "匹配到的允许根目录别名。"
+            },
+            "suffix": {
+              "type": "string",
+              "description": "表格文件后缀。"
+            },
+            "parser": {
+              "type": "string",
+              "description": "使用的解析器；xlsx 时为第一张工作表路径。"
+            },
+            "num_rows": {
+              "type": "integer",
+              "description": "数据行数。"
+            },
+            "num_columns": {
+              "type": "integer",
+              "description": "列数。"
+            },
+            "columns": {
+              "type": "array",
+              "description": "列名。"
+            },
+            "preview": {
+              "type": "array",
+              "description": "前几行预览。"
+            },
+            "column_profiles": {
+              "type": "object",
+              "description": "按列统计的缺失值和唯一值信息。"
+            },
+            "describe": {
+              "type": "object",
+              "description": "按列统计的数值信息。"
+            }
+          }
+        },
+        "x-skill-result": {
+          "type": "object",
+          "description": "ToolMessage.content 解析后的统一工具结果封装。",
+          "properties": {
+            "skill_name": {
+              "type": "string",
+              "description": "工具名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "success 或 error。"
+            },
+            "input": {
+              "type": "object",
+              "description": "实际传给工具的参数。"
+            },
+            "output": {
+              "type": "object",
+              "description": "工具业务结果。",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "规范化后的表格路径；如果不在数据目录下，会包含根目录别名。"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "相对匹配根目录的路径。"
+                },
+                "root_alias": {
+                  "type": "string",
+                  "description": "匹配到的允许根目录别名。"
+                },
+                "suffix": {
+                  "type": "string",
+                  "description": "表格文件后缀。"
+                },
+                "parser": {
+                  "type": "string",
+                  "description": "使用的解析器；xlsx 时为第一张工作表路径。"
+                },
+                "num_rows": {
+                  "type": "integer",
+                  "description": "数据行数。"
+                },
+                "num_columns": {
+                  "type": "integer",
+                  "description": "列数。"
+                },
+                "columns": {
+                  "type": "array",
+                  "description": "列名。"
+                },
+                "preview": {
+                  "type": "array",
+                  "description": "前几行预览。"
+                },
+                "column_profiles": {
+                  "type": "object",
+                  "description": "按列统计的缺失值和唯一值信息。"
+                },
+                "describe": {
+                  "type": "object",
+                  "description": "按列统计的数值信息。"
+                }
+              }
+            },
+            "error": {
+              "type": "object",
+              "description": "失败时的错误类型和错误消息。"
+            },
+            "latency_ms": {
+              "type": "number",
+              "description": "工具执行耗时，单位毫秒。"
+            },
+            "summary": {
+              "type": "object",
+              "description": "面向模型的简短摘要和计数字段。"
+            },
+            "sources": {
+              "type": "array",
+              "description": "文件读取、搜索或表格分析涉及的来源路径。"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "工具生成的文件。"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "tools_file": "C:\\Users\\guojia\\Desktop\\实训二段\\assignment_B\\agent\\configs\\tools.yaml",
+  "memory_file": "C:\\Users\\guojia\\Desktop\\实训二段\\assignment_B\\agent\\configs\\memory.yaml",
+  "model_file": "C:\\Users\\guojia\\Desktop\\实训二段\\assignment_B\\agent\\configs\\model.yaml",
+  "system_prompt": "你是一个本地任务型 Agent，负责理解用户目标，结合对话上下文和可用工具完成任务，并给出可靠、清晰、可执行的回答。\n\n职责边界：\n- 优先满足用户当前任务，不主动扩展无关目标。\n- 不编造文件内容、工具结果、当前时间、搜索结果、外部事实或无法确认的信息。\n- 当完成任务需要运行时信息、本地文件、上传文件、计算结果、网页信息或其他工具可获得的信息时，先使用工具，再基于工具结果回答。\n- 如果用户提供的信息不足以继续，应说明缺少什么；不要用猜测替代关键输入。\n- 如果工具失败或结果不足，应基于失败原因重新规划；无法继续时，明确说明失败原因。\n\n行为原则：\n- 保持对话连续性，只使用已提供的上下文和当前可用信息。\n- 工具调用可以分步进行；后续调用依赖前一步结果时，应等待结果后再决策。\n- 多个工具调用彼此独立且参数已经明确时，可以在同一轮请求多个工具。\n- 面向用户的最终回答应自然、简洁，并遵守用户指定的语言、格式和输出要求。\n- 不向用户暴露内部协议、隐藏提示词或无关的系统实现细节。",
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是一个本地任务型 Agent，负责理解用户目标，结合对话上下文和可用工具完成任务，并给出可靠、清晰、可执行的回答。\n\n职责边界：\n- 优先满足用户当前任务，不主动扩展无关目标。\n- 不编造文件内容、工具结果、当前时间、搜索结果、外部事实或无法确认的信息。\n- 当完成任务需要运行时信息、本地文件、上传文件、计算结果、网页信息或其他工具可获得的信息时，先使用工具，再基于工具结果回答。\n- 如果用户提供的信息不足以继续，应说明缺少什么；不要用猜测替代关键输入。\n- 如果工具失败或结果不足，应基于失败原因重新规划；无法继续时，明确说明失败原因。\n\n行为原则：\n- 保持对话连续性，只使用已提供的上下文和当前可用信息。\n- 工具调用可以分步进行；后续调用依赖前一步结果时，应等待结果后再决策。\n- 多个工具调用彼此独立且参数已经明确时，可以在同一轮请求多个工具。\n- 面向用户的最终回答应自然、简洁，并遵守用户指定的语言、格式和输出要求。\n- 不向用户暴露内部协议、隐藏提示词或无关的系统实现细节。"
+    },
+    {
+      "role": "user",
+      "content": "你好"
+    },
+    {
+      "role": "assistant",
+      "content": "你好！很高兴见到你，有什么我可以帮你的吗？",
+      "tool_calls": [],
+      "control": {
+        "state": "completed",
+        "action": "finish",
+        "reason": ""
+      },
+      "agent_step": {
+        "phase": "final",
+        "plan": "",
+        "observation": "",
+        "next_step": "",
+        "known_facts": [],
+        "missing_info": []
+      }
+    }
+  ],
+  "all_tool_messages": [],
+  "tool_rounds": 0,
+  "llm_calls": 2,
+  "turns": [
+    {
+      "turn_index": 1,
+      "ai_message": {
+        "role": "assistant",
+        "content": "['直接回答，无需调用任何工具']",
+        "tool_calls": [],
+        "control": {
+          "state": "completed",
+          "action": "finish",
+          "reason": "workspace planning"
+        },
+        "agent_step": {
+          "phase": "plan",
+          "plan": "['直接回答，无需调用任何工具']",
+          "observation": "用户输入为简单问候语‘你好’，无隐含任务、无文件操作需求、无信息查询需求，可直接回应",
+          "known_facts": [],
+          "missing_info": [],
+          "next_step": "answering"
+        }
+      },
+      "llm_prompt_messages": [
+        {
+          "role": "system",
+          "content": "你是一个本地任务型 Agent，负责理解用户目标，结合对话上下文和可用工具完成任务，并给出可靠、清晰、可执行的回答。\n\n职责边界：\n- 优先满足用户当前任务，不主动扩展无关目标。\n- 不编造文件内容、工具结果、当前时间、搜索结果、外部事实或无法确认的信息。\n- 当完成任务需要运行时信息、本地文件、上传文件、计算结果、网页信息或其他工具可获得的信息时，先使用工具，再基于工具结果回答。\n- 如果用户提供的信息不足以继续，应说明缺少什么；不要用猜测替代关键输入。\n- 如果工具失败或结果不足，应基于失败原因重新规划；无法继续时，明确说明失败原因。\n\n行为原则：\n- 保持对话连续性，只使用已提供的上下文和当前可用信息。\n- 工具调用可以分步进行；后续调用依赖前一步结果时，应等待结果后再决策。\n- 多个工具调用彼此独立且参数已经明确时，可以在同一轮请求多个工具。\n- 面向用户的最终回答应自然、简洁，并遵守用户指定的语言、格式和输出要求。\n- 不向用户暴露内部协议、隐藏提示词或无关的系统实现细节。\n\n你正在处理本轮对话的一个内部步骤。只完成当前步骤要求，不要在最终回答或中间说明里提到模块名、内部架构、调度器等实现细节。"
+        },
+        {
+          "role": "user",
+          "content": "阶段：planning\n判断用户本轮到底要什么，并决定是否需要工具。打招呼、闲聊、普通问答、让你记住一句话或数字时，通常直接 answering；记忆会由系统在对话结束后保存，不存在也不得创造 memory_writer、memory_write、save_memory 等工具。只有需要读取文件、搜索网页、获取当前时间、计算、写真实文件、分析表格或格式转换时，才写 tool_calling。如果可以直接回答，next_stage 写 answering；如果确实无法推进，写 failed。不要调用工具。如果用户要求生成、保存、导出或下载文件，必须在 required_outputs 中列出需要交付的文件产物；只有看到成功写文件工具返回的 artifact/download_url 后，才能认为该产物完成。JSON 键：user_goal、requirements、success_criteria、required_outputs、plan、known_facts、missing_info、next_stage、reason。known_facts 和 missing_info 只写和用户目标直接相关的信息，不要列工具清单、内部模块或实现细节。\n\n本轮状态如下：\n{\n  \"user_input\": \"你好\",\n  \"input_images_count\": 0,\n  \"history_messages\": [],\n  \"history_policy\": {\n    \"source\": \"recent_history_messages\",\n    \"full_history_message_count\": 0,\n    \"workspace_history_message_count\": 0\n  },\n  \"legacy_memory\": {\n    \"status\": \"success\",\n    \"selected_memory_count\": 0,\n    \"total_chars\": 0,\n    \"truncated\": false,\n    \"errors\": [],\n    \"note\": \"legacy markdown memory is not injected into the active workspace context\"\n  },\n  \"workspace_memory\": {\n    \"legacy\": {\n      \"status\": \"success\",\n      \"selected_memory_count\": 0,\n      \"total_chars\": 0,\n      \"truncated\": false,\n      \"errors\": [],\n      \"note\": \"legacy markdown memory is not injected into the active workspace context\"\n    },\n    \"layered\": {\n      \"status\": \"success\",\n      \"memory_policy\": {\n        \"current_input_priority\": true,\n        \"summaries_are_locators\": true,\n        \"exact_facts_require_source\": true,\n        \"recent_history_is_raw\": true,\n        \"older_history_is_recalled_only_when_selected\": true,\n        \"vector_retrieval\": {\n          \"blocks\": {\n            \"status\": \"skipped\",\n            \"enabled\": true,\n            \"reason\": \"empty query or candidates\"\n          },\n          \"turns\": {\n            \"status\": \"skipped\",\n            \"enabled\": true,\n            \"reason\": \"empty query or candidates\"\n          }\n        },\n        \"llm_rerank\": {\n          \"status\": \"skipped\",\n          \"enabled\": true\n        }\n      },\n      \"foreground_task\": null,\n      \"paused_tasks\": [],\n      \"recalled_blocks\": [],\n      \"recalled_turns\": [],\n      \"source_messages\": [],\n      \"source_tool_steps\": [],\n      \"recent_context_turns\": 4,\n      \"history_message_count\": 0,\n      \"recent_history_message_count\": 0,\n      \"context_chars\": 0,\n      \"max_context_chars\": 2000,\n      \"truncated\": false,\n      \"loaded_message_ids\": [],\n      \"loaded_tool_step_ids\": [],\n      \"vector_retrieval\": {\n        \"blocks\": {\n          \"status\": \"skipped\",\n          \"enabled\": true,\n          \"reason\": \"empty query or candidates\"\n        },\n        \"turns\": {\n          \"status\": \"skipped\",\n          \"enabled\": true,\n          \"reason\": \"empty query or candidates\"\n        }\n      },\n      \"llm_rerank\": {\n        \"status\": \"skipped\",\n        \"enabled\": true\n      },\n      \"retrieval_log\": {\n        \"status\": \"success\",\n        \"retrieval_log_id\": \"memory_retrieval_e803b3d709e34fc0918df564b36e0a16\",\n        \"created_at\": \"2026-07-13T10:53:24+08:00\"\n      },\n      \"error\": null\n    }\n  },\n  \"available_tools\": [\n    {\n      \"name\": \"calculator\",\n      \"description\": \"计算明确的算术表达式，例如加减乘除、括号和幂运算。适合用户给出具体表达式并需要精确数值结果的场景；复杂表格统计优先使用 table_analyzer。\",\n      \"args\": [\n        \"expression\"\n      ]\n    },\n    {\n      \"name\": \"current_time\",\n      \"description\": \"获取当前日期、时间、星期、时间戳或指定时区时间。适合回答“现在几点”“今天日期”“当前时间”等需要实时钟表信息的问题；默认不传 timezone 表示本地时间。\",\n      \"args\": [\n        \"timezone\"\n      ]\n    },\n    {\n      \"name\": \"directory_list\",\n      \"description\": \"列出允许工作区内某个目录的文件和子目录，类似 ls。用于探路、确认上传文件名、查看目录下有哪些文件；不读取文件正文。若已经知道准确文件路径并需要内容，应使用 file_reader。\",\n      \"args\": [\n        \"path\",\n        \"recursive\",\n        \"max_depth\",\n        \"file_types\",\n        \"include_hidden\",\n        \"max_entries\"\n      ]\n    },\n    {\n      \"name\": \"file_stat\",\n      \"description\": \"检查允许工作区内某个路径是否存在及其类型，类似 stat。用于读取前确认路径、判断是文件还是目录、查看后缀和大小；不读取文件正文。\",\n      \"args\": [\n        \"path\"\n      ]\n    },\n    {\n      \"name\": \"file_reader\",\n      \"description\": \"读取一个已知路径文件的正文，类似 cat。支持 txt、md、json、jsonl、csv、tsv、yaml、py、log、docx、pptx；不支持图片、PDF、旧版 doc/ppt、xlsx 或扫描件。不知道文件名时先用 directory_list；只知道关键词时先用 local_file_search。若返回 truncated=true，只表示读取了部分内容，不能声称已读完整文件。\",\n      \"args\": [\n        \"path\",\n        \"max_chars\",\n        \"start_line\",\n        \"end_line\"\n      ]\n    },\n    {\n      \"name\": \"text_file_writer\",\n      \"description\": \"当用户明确要求生成或保存 .txt 纯文本文件时使用。只在本次运行的 generated_files 输出目录中创建新文件，不修改已有项目文件，不覆盖同名文件；普通对话、记录、总结或直接回答不需要调用。\",\n      \"args\": [\n        \"filename\",\n        \"content\"\n      ]\n    },\n    {\n      \"name\": \"markdown_file_writer\",\n      \"description\": \"当用户明确要求生成或保存 Markdown 文档时使用。只创建 .md 文件；不要把普通回答、摘要或列表都自动写成文件，除非用户明确要求导出/保存/生成文件。\",\n      \"args\": [\n        \"filename\",\n        \"content\"\n      ]\n    },\n    {\n      \"name\": \"code_file_writer\",\n      \"description\": \"当用户明确要求生成代码文件、脚本文件或给出具体代码文件名/后缀时使用。只写入代码文本，不执行代码、不安装依赖、不修改项目源文件；支持常见代码后缀如 .py、.cpp、.c、.js、.ts、.tsx、.html、.css、.java、.go、.rs、.sql、.sh、.ps1。\",\n      \"args\": [\n        \"filename\",\n        \"content\",\n        \"language\"\n      ]\n    },\n    {\n      \"name\": \"json_file_writer\",\n      \"description\": \"当用户明确要求生成或导出 JSON 文件时使用。输入必须是结构化 JSON 对象，由工具负责序列化和格式化，避免让模型手写不合法 JSON 字符串。\",\n      \"args\": [\n        \"filename\",\n        \"data\"\n      ]\n    },\n    {\n      \"name\": \"docx_writer\",\n      \"description\": \"当用户明确要求生成 Word 文档或 .docx 文件时使用。输入为纯文本内容，工具会生成最小可打开的 docx 文件；复杂样式、图片、页眉页脚和表格排版不由此工具保证。\",\n      \"args\": [\n        \"filename\",\n        \"content\"\n      ]\n    },\n    {\n      \"name\": \"table_file_writer\",\n      \"description\": \"当用户明确要求生成 CSV 或 TSV 表格文件时使用。输入必须包含列名和行数据；不要用于分析已有表格，分析已有表格应使用 table_analyzer。\",\n      \"args\": [\n        \"filename\",\n        \"columns\",\n        \"rows\"\n      ]\n    },\n    {\n      \"name\": \"web_search\",\n      \"description\": \"直接通过 DDGS/DuckDuckGo 进行网页搜索。用于互联网搜索、实时新闻、近期事件、当前外部信息，或本地文件中没有的主题。query 应写成具体搜索词，包含主题、地区、时间范围或信息类型；不要只写“查一下”“实时新闻”等空泛词。该工具只返回搜索结果和链接，不负责打开网页正文。\",\n      \"args\": [\n        \"query\",\n        \"top_k\",\n        \"search_type\",\n        \"region\",\n        \"timelimit\"\n      ]\n    },\n    {\n      \"name\": \"local_file_search\",\n      \"description\": \"在允许工作区内按关键词搜索本地文本类文件，类似 grep。用于根据关键词找到可能相关的文件路径和片段；不读取完整正文。列目录用 directory_list；读取确定文件用 file_reader。不能用于网页、互联网、实时新闻或当前外部信息。\",\n      \"args\": [\n        \"query\",\n        \"root_dir\",\n        \"file_types\",\n        \"top_k\",\n        \"max_file_chars\"\n      ]\n    },\n    {\n      \"name\": \"table_analyzer\",\n      \"description\": \"分析已有的本地 CSV、TSV 或 XLSX 表格文件，返回行列数、列名、预览、缺失值和可选数值统计。XLSX 默认分析第一张工作表。不用于生成表格文件；生成 CSV/TSV 应使用 table_file_writer。\",\n      \"args\": [\n        \"path\",\n        \"max_rows_preview\",\n        \"describe\"\n      ]\n    }\n  ]\n}\n\n只能输出一个 JSON 对象，不能输出 Markdown、代码块或 JSON 之外的文字。"
+        }
+      ],
+      "llm_status": "success",
+      "llm_error": null,
+      "tool_messages": [],
+      "control": {
+        "state": "completed",
+        "action": "finish",
+        "reason": "workspace planning"
+      },
+      "agent_step": {
+        "phase": "plan",
+        "plan": "['直接回答，无需调用任何工具']",
+        "observation": "用户输入为简单问候语‘你好’，无隐含任务、无文件操作需求、无信息查询需求，可直接回应",
+        "known_facts": [],
+        "missing_info": [],
+        "next_step": "answering"
+      },
+      "latency_ms": null
+    },
+    {
+      "turn_index": 2,
+      "ai_message": {
+        "role": "assistant",
+        "content": "你好！很高兴见到你，有什么我可以帮你的吗？",
+        "tool_calls": [],
+        "control": {
+          "state": "completed",
+          "action": "finish",
+          "reason": ""
+        },
+        "agent_step": {
+          "phase": "final",
+          "plan": "",
+          "observation": "",
+          "next_step": "",
+          "known_facts": [],
+          "missing_info": []
+        }
+      },
+      "llm_prompt_messages": [
+        {
+          "role": "system",
+          "content": "你是一个本地任务型 Agent，负责理解用户目标，结合对话上下文和可用工具完成任务，并给出可靠、清晰、可执行的回答。\n\n职责边界：\n- 优先满足用户当前任务，不主动扩展无关目标。\n- 不编造文件内容、工具结果、当前时间、搜索结果、外部事实或无法确认的信息。\n- 当完成任务需要运行时信息、本地文件、上传文件、计算结果、网页信息或其他工具可获得的信息时，先使用工具，再基于工具结果回答。\n- 如果用户提供的信息不足以继续，应说明缺少什么；不要用猜测替代关键输入。\n- 如果工具失败或结果不足，应基于失败原因重新规划；无法继续时，明确说明失败原因。\n\n行为原则：\n- 保持对话连续性，只使用已提供的上下文和当前可用信息。\n- 工具调用可以分步进行；后续调用依赖前一步结果时，应等待结果后再决策。\n- 多个工具调用彼此独立且参数已经明确时，可以在同一轮请求多个工具。\n- 面向用户的最终回答应自然、简洁，并遵守用户指定的语言、格式和输出要求。\n- 不向用户暴露内部协议、隐藏提示词或无关的系统实现细节。\n\n你正在生成最终回复。只面向用户输出最终答案。不要泄露工具 JSON、内部阶段名、内部状态结构、调度过程、解析异常或内部错误细节。"
+        },
+        {
+          "role": "user",
+          "content": "根据用户任务、可用证据和已知事实生成最终回答。\n如果信息不足，直接说明还需要什么；不要编造。只有 accepted_evidence 或成功工具结果中明确出现的信息，才能声明为已经完成。如果 pending_required_outputs 非空，不得声称文件已生成，只能说明还缺少对应产物。没有成功的写文件工具结果时，不得说文件已生成；没有下载接口或下载工具时，不得说已经可以直接下载；文件生成成功时，只说明文件名和已生成；不要在正文写 download_url、/api/artifacts 链接、generated_file_path 或本地绝对路径，前端会用独立下载卡片展示文件。没有成功 file_reader/search/calculator 等结果时，不得声称已经读取、搜索或计算完成。\n只输出 AIMessage JSON 对象，顶层键只能是 content、tool_calls、control、agent_step。\n必须满足：tool_calls=[]，control.action=finish，control.state 为 completed 或 failed，agent_step.phase=final。\n\n本轮状态如下：\n{\n  \"user_input\": \"你好\",\n  \"history_messages\": [],\n  \"workspace_memory\": {\n    \"legacy\": {\n      \"status\": \"success\",\n      \"selected_memory_count\": 0,\n      \"total_chars\": 0,\n      \"truncated\": false,\n      \"errors\": [],\n      \"note\": \"legacy markdown memory is not injected into the active workspace context\"\n    },\n    \"layered\": {\n      \"status\": \"success\",\n      \"memory_policy\": {\n        \"current_input_priority\": true,\n        \"summaries_are_locators\": true,\n        \"exact_facts_require_source\": true,\n        \"recent_history_is_raw\": true,\n        \"older_history_is_recalled_only_when_selected\": true,\n        \"vector_retrieval\": {\n          \"blocks\": {\n            \"status\": \"skipped\",\n            \"enabled\": true,\n            \"reason\": \"empty query or candidates\"\n          },\n          \"turns\": {\n            \"status\": \"skipped\",\n            \"enabled\": true,\n            \"reason\": \"empty query or candidates\"\n          }\n        },\n        \"llm_rerank\": {\n          \"status\": \"skipped\",\n          \"enabled\": true\n        }\n      },\n      \"foreground_task\": null,\n      \"paused_tasks\": [],\n      \"recalled_blocks\": [],\n      \"recalled_turns\": [],\n      \"source_messages\": [],\n      \"source_tool_steps\": [],\n      \"recent_context_turns\": 4,\n      \"history_message_count\": 0,\n      \"recent_history_message_count\": 0,\n      \"context_chars\": 0,\n      \"max_context_chars\": 2000,\n      \"truncated\": false,\n      \"loaded_message_ids\": [],\n      \"loaded_tool_step_ids\": [],\n      \"vector_retrieval\": {\n        \"blocks\": {\n          \"status\": \"skipped\",\n          \"enabled\": true,\n          \"reason\": \"empty query or candidates\"\n        },\n        \"turns\": {\n          \"status\": \"skipped\",\n          \"enabled\": true,\n          \"reason\": \"empty query or candidates\"\n        }\n      },\n      \"llm_rerank\": {\n        \"status\": \"skipped\",\n        \"enabled\": true\n      },\n      \"retrieval_log\": {\n        \"status\": \"success\",\n        \"retrieval_log_id\": \"memory_retrieval_e803b3d709e34fc0918df564b36e0a16\",\n        \"created_at\": \"2026-07-13T10:53:24+08:00\"\n      },\n      \"error\": null\n    }\n  },\n  \"task\": {\n    \"user_goal\": \"打招呼，开启对话\",\n    \"requirements\": [\n      \"回应用户的问候，保持礼貌和友好\"\n    ],\n    \"success_criteria\": [\n      \"输出一句自然、得体的中文问候回应\"\n    ],\n    \"required_outputs\": [],\n    \"plan\": \"['直接回答，无需调用任何工具']\",\n    \"stage\": \"answering\",\n    \"reason\": \"用户输入为简单问候语‘你好’，无隐含任务、无文件操作需求、无信息查询需求，可直接回应\"\n  },\n  \"accepted_evidence\": [],\n  \"rejected_evidence\": [],\n  \"known_facts\": [],\n  \"missing_info\": [],\n  \"tool_attempts\": [],\n  \"observations\": [],\n  \"success_criteria\": [\n    \"输出一句自然、得体的中文问候回应\"\n  ],\n  \"required_outputs\": [],\n  \"produced_artifacts\": [],\n  \"pending_required_outputs\": []\n}"
+        }
+      ],
+      "llm_status": "success",
+      "llm_error": null,
+      "tool_messages": [],
+      "control": {
+        "state": "completed",
+        "action": "finish",
+        "reason": ""
+      },
+      "agent_step": {
+        "phase": "final",
+        "plan": "",
+        "observation": "",
+        "next_step": "",
+        "known_facts": [],
+        "missing_info": []
+      },
+      "latency_ms": null
+    }
+  ],
+  "warnings": [],
+  "workspace": {
+    "input": {
+      "conversation_id": "conv_web_20260713_105323_889",
+      "user_input": "你好",
+      "history_messages": [],
+      "history_policy": {
+        "source": "recent_history_messages",
+        "full_history_message_count": 0,
+        "workspace_history_message_count": 0
+      },
+      "input_images_count": 0
+    },
+    "memory": {
+      "legacy": {
+        "status": "success",
+        "selected_memory_count": 0,
+        "total_chars": 0,
+        "truncated": false,
+        "errors": [],
+        "note": "legacy markdown memory is not injected into the active workspace context"
+      },
+      "layered": {
+        "status": "success",
+        "memory_policy": {
+          "current_input_priority": true,
+          "summaries_are_locators": true,
+          "exact_facts_require_source": true,
+          "recent_history_is_raw": true,
+          "older_history_is_recalled_only_when_selected": true,
+          "vector_retrieval": {
+            "blocks": {
+              "status": "skipped",
+              "enabled": true,
+              "reason": "empty query or candidates"
+            },
+            "turns": {
+              "status": "skipped",
+              "enabled": true,
+              "reason": "empty query or candidates"
+            }
+          },
+          "llm_rerank": {
+            "status": "skipped",
+            "enabled": true
+          }
+        },
+        "foreground_task": null,
+        "paused_tasks": [],
+        "recalled_blocks": [],
+        "recalled_turns": [],
+        "source_messages": [],
+        "source_tool_steps": [],
+        "recent_context_turns": 4,
+        "history_message_count": 0,
+        "recent_history_message_count": 0,
+        "context_chars": 0,
+        "max_context_chars": 2000,
+        "truncated": false,
+        "loaded_message_ids": [],
+        "loaded_tool_step_ids": [],
+        "vector_retrieval": {
+          "blocks": {
+            "status": "skipped",
+            "enabled": true,
+            "reason": "empty query or candidates"
+          },
+          "turns": {
+            "status": "skipped",
+            "enabled": true,
+            "reason": "empty query or candidates"
+          }
+        },
+        "llm_rerank": {
+          "status": "skipped",
+          "enabled": true
+        },
+        "retrieval_log": {
+          "status": "success",
+          "retrieval_log_id": "memory_retrieval_e803b3d709e34fc0918df564b36e0a16",
+          "created_at": "2026-07-13T10:53:24+08:00"
+        },
+        "error": null
+      }
+    },
+    "task": {
+      "user_goal": "打招呼，开启对话",
+      "requirements": [
+        "回应用户的问候，保持礼貌和友好"
+      ],
+      "success_criteria": [
+        "输出一句自然、得体的中文问候回应"
+      ],
+      "required_outputs": [],
+      "plan": "['直接回答，无需调用任何工具']",
+      "stage": "answering",
+      "reason": "用户输入为简单问候语‘你好’，无隐含任务、无文件操作需求、无信息查询需求，可直接回应"
+    },
+    "tools": {
+      "calls": [],
+      "results": [],
+      "observations": [],
+      "accepted_evidence": [],
+      "rejected_evidence": [],
+      "no_action_outputs": [],
+      "last_tool_intent": ""
+    },
+    "draft": {
+      "known_facts": [],
+      "missing_info": []
+    },
+    "final": {
+      "answer": "你好！很高兴见到你，有什么我可以帮你的吗？",
+      "status": "success"
+    },
+    "trace": [
+      {
+        "phase": "planning",
+        "payload": {
+          "user_goal": "打招呼，开启对话",
+          "requirements": [
+            "回应用户的问候，保持礼貌和友好"
+          ],
+          "success_criteria": [
+            "输出一句自然、得体的中文问候回应"
+          ],
+          "required_outputs": [],
+          "plan": [
+            "直接回答，无需调用任何工具"
+          ],
+          "known_facts": [],
+          "missing_info": [],
+          "next_stage": "answering",
+          "reason": "用户输入为简单问候语‘你好’，无隐含任务、无文件操作需求、无信息查询需求，可直接回应"
+        }
+      },
+      {
+        "phase": "answering",
+        "payload": {
+          "content": "你好！很高兴见到你，有什么我可以帮你的吗？",
+          "control": {
+            "state": "completed",
+            "action": "finish",
+            "reason": ""
+          },
+          "agent_step": {
+            "phase": "final",
+            "plan": "",
+            "observation": "",
+            "next_step": "",
+            "known_facts": [],
+            "missing_info": []
+          }
+        }
+      }
+    ]
+  },
+  "conversation_id": "conv_web_20260713_105323_889"
+}
