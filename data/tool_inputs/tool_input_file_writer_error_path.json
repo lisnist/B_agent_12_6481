@@ -1,0 +1,5 @@
+{
+  "filename": "../x.md",
+  "file_type": "markdown",
+  "content": "This must fail because parent-directory segments are not allowed."
+}

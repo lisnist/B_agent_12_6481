@@ -1,0 +1,4 @@
+{
+  "filename": "agent_report.docx",
+  "content": "Agent Report\n\nB1 orchestrates the runtime.\nB3 executes tool calls.\nB4 does not execute tools."
+}

@@ -1,0 +1,46 @@
+runtime:
+  default_mode: prompt_json
+  # local: 本机 transformers 直连；fastapi: 学校算力服务器；qwen_api: 本地代理转 Qwen API。
+  llm_source: qwen_api
+
+model:
+  backend: transformers
+  model_name_or_path: ../models/Qwen3.5-4B
+  tokenizer_name_or_path: ../models/Qwen3.5-4B
+  local_files_only: true
+  trust_remote_code: true
+  torch_dtype: bfloat16
+  device_map: auto
+
+generation:
+  max_new_tokens: 1024
+  do_sample: false
+  temperature: 0
+  top_p: 1
+
+context:
+  max_input_tokens: 4096
+
+tool_calling:
+  mode: prompt_json
+
+fastapi:
+  base_url: http://127.0.0.1:8012
+  generate_path: /generate
+  stream_path: /generate_stream
+  timeout_seconds: 600
+  api_key: null
+  model: null
+
+qwen_api:
+  base_url: http://127.0.0.1:8012
+  generate_path: /generate
+  stream_path: /generate_stream
+  timeout_seconds: 600
+  api_key: null
+  model: qwen-plus
+
+outputs:
+  save_raw_output: true
+  save_ai_message: true
+  save_prompt_text: true

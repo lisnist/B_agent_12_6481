@@ -1,0 +1,12 @@
+{
+  "tool_calls": [
+    {
+      "id": "call_001",
+      "name": "markdown_file_writer",
+      "args": {
+        "filename": "../x.md",
+        "content": "This must fail because the path escapes generated_files."
+      }
+    }
+  ]
+}

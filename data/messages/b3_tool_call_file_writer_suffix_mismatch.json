@@ -1,0 +1,12 @@
+{
+  "tool_calls": [
+    {
+      "id": "call_001",
+      "name": "docx_writer",
+      "args": {
+        "filename": "a.md",
+        "content": "This must fail because docx output requires a .docx filename."
+      }
+    }
+  ]
+}

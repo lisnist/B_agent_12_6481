@@ -1,0 +1,5 @@
+{
+  "query": "Python Agent tools schema example",
+  "top_k": 5,
+  "search_type": "text"
+}

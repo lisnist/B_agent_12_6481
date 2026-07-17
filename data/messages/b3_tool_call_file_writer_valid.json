@@ -1,0 +1,12 @@
+{
+  "tool_calls": [
+    {
+      "id": "call_001",
+      "name": "markdown_file_writer",
+      "args": {
+        "filename": "b3_file_writer_demo.md",
+        "content": "# B3 File Writer Demo\n\nThis file should be generated under the run output directory."
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "filename": "agent_summary.md",
+  "content": "# Agent Summary\n\n- B1 orchestrates the loop.\n- B3 executes tool calls.\n- B4 only produces AIMessage decisions."
+}

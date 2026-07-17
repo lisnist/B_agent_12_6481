@@ -1,0 +1,5 @@
+{
+  "filename": "wrong_suffix.md",
+  "file_type": "docx",
+  "content": "This must fail because file_type=docx requires a .docx filename."
+}

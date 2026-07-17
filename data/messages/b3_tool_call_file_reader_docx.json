@@ -1,0 +1,14 @@
+{
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+    {
+      "id": "call_docx_001",
+      "name": "file_reader",
+      "args": {
+        "path": "docs/sample_agent.docx",
+        "max_chars": 2000
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+memory:
+  root_dir: ../memory
+  global_memory_dir: global
+  conversation_memory_dir: conversations
+  index_path: memory_index.json
+  conversation_db_path: conversation_store.sqlite3
+  max_memory_chars: 2000
+  retrieval:
+    vector:
+      enabled: true
+      provider: fastapi
+      embedding_path: /embeddings
+      model: text-embedding-v4
+      top_k_blocks: 6
+      top_k_turns: 12
+      min_score: 0.25
+      block_weight: 0.85
+      turn_weight: 0.95
+      batch_size: 16
+      max_text_chars: 900
+      timeout_seconds: 30
+    llm_rerank:
+      enabled: true
+      max_candidates: 12
+      max_selected_turns: 5
